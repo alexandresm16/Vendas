@@ -32,8 +32,8 @@ class VendaAdmin(ExportMixin, admin.ModelAdmin):
     resource_class = VendaResource  # <-- Aqui está a mágica
     inlines = [ItemVendaInline]
     readonly_fields = ['data', 'usuario']
-    list_display = ['id', 'data', 'usuario', 'valor_total']
-    list_filter = ['data', 'usuario']
+    list_display = ['id', 'data', 'usuario', 'forma_pagamento', 'valor_total']
+    list_filter = ['data', 'usuario', 'forma_pagamento']
 
     def save_model(self, request, obj, form, change):
         if not obj.pk:

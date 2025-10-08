@@ -24,8 +24,21 @@ class Estoque(models.Model):
 
 
 class Venda(models.Model):
+    FORMA_PAGAMENTO_CHOICES = [
+        ('PIX', 'PIX'),
+        ('DEBITO', 'Débito'),
+        ('DINHEIRO', 'Dinheiro'),
+        ('CREDITO', 'Crédito'),
+    ]
+    
     usuario = models.ForeignKey(User, on_delete=models.PROTECT)  # Novo campo
     data = models.DateTimeField(auto_now_add=True)
+    forma_pagamento = models.CharField(
+        max_length=8,
+        choices=FORMA_PAGAMENTO_CHOICES,
+        default='DINHEIRO',
+        verbose_name="Forma de Pagamento"
+    )
 
     def __str__(self):
         return f"Venda {self.id} - {self.data.strftime('%d/%m/%Y %H:%M')}"

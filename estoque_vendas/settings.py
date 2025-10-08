@@ -42,6 +42,7 @@ INSTALLED_APPS = [
 INSTALLED_APPS += [
     'core',
     'import_export',
+    'django_bootstrap5',
 ]
 
 MIDDLEWARE = [

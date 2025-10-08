@@ -31,8 +31,8 @@ class VendaResource(resources.ModelResource):
 
     class Meta:
         model = Venda
-        fields = ('id', 'data', 'usuario', 'valor_total', 'quantidade_total_itens', 'itens')
-        export_order = ('id', 'data', 'usuario', 'valor_total', 'quantidade_total_itens', 'itens')
+        fields = ('id', 'data', 'usuario', 'valor_total', 'forma_pagamento', 'quantidade_total_itens', 'itens')
+        export_order = ('id', 'data', 'usuario', 'valor_total', 'forma_pagamento', 'quantidade_total_itens', 'itens')
 
 
 class ItemVendaResource(resources.ModelResource):
@@ -41,6 +41,7 @@ class ItemVendaResource(resources.ModelResource):
     usuario = fields.Field(column_name='usuario')
     produto = fields.Field(column_name='produto')
     subtotal = fields.Field(column_name='subtotal')
+    forma_pagamento = fields.Field(column_name='forma_pagamento')
 
     def dehydrate_data_venda(self, obj):
         return obj.venda.data.strftime('%Y-%m-%d %H:%M')
@@ -54,10 +55,15 @@ class ItemVendaResource(resources.ModelResource):
     def dehydrate_subtotal(self, obj):
         return obj.quantidade * obj.preco_unitario
 
+    def dehydrate_forma_pagamento(self, obj):
+        return obj.venda.get_forma_pagamento_display()
+
     class Meta:
         model = ItemVenda
-        fields = ('venda_id', 'data_venda', 'usuario', 'produto', 'quantidade', 'preco_unitario', 'subtotal')
-        export_order = ('venda_id', 'data_venda', 'usuario', 'produto', 'quantidade', 'preco_unitario', 'subtotal')
+        fields = ('venda_id', 'data_venda', 'usuario', 'produto', 'quantidade', 'preco_unitario', 'subtotal',
+                  'forma_pagamento')
+        export_order = ('venda_id', 'data_venda', 'usuario', 'produto', 'quantidade', 'preco_unitario', 'subtotal',
+                        'forma_pagamento')
 
 
 class EstoqueResource(resources.ModelResource):

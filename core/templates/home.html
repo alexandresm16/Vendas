@@ -3,34 +3,21 @@
 <head>
     <meta charset="UTF-8">
     <title>Bem-vindo</title>
-    <style>
-        body {
-            font-family: Arial, sans-serif;
-            text-align: center;
-            padding-top: 100px;
-            background-color: #f9f9f9;
-        }
-
-        h1 {
-            color: #333;
-        }
-
-        .login-button {
-            padding: 12px 24px;
-            font-size: 18px;
-            background-color: #0c4b91;
-            color: white;
-            text-decoration: none;
-            border-radius: 5px;
-        }
-
-        .login-button:hover {
-            background-color: #083a70;
-        }
-    </style>
+    {% load django_bootstrap5 %}
+    {% bootstrap_css %}
+    {% bootstrap_javascript %}
 </head>
-<body>
-    <h1>Bem-vindo ao Sistema de Gestão</h1>
-    <a href="/admin/login/" class="login-button">Entrar no Sistema</a>
+<body class="bg-light d-flex flex-column justify-content-center align-items-center">
+
+    <div class="text-center pt-5 mt-5">
+        <h1 class="text-dark">Bem-vindo ao Sistema de Gestão</h1>
+
+        <div class="d-flex flex-column gap-3">
+            <a href="/admin/login/" class="btn btn-primary btn-lg">Entrar no Sistema</a>
+            <a href="/dashboard" class="btn btn-secondary btn-lg">Dashboard</a>
+        </div>
+    </div>
+
 </body>
 </html>
+
