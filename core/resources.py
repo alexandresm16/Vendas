@@ -16,7 +16,7 @@ class VendaResource(resources.ModelResource):
     quantidade_total_itens = fields.Field(column_name='quantidade_total_itens')  # <-- novo campo
 
     def dehydrate_valor_total(self, obj):
-        return obj.valor_total
+        return f"{obj.valor_total:.2f}".replace('.', ',')
 
     def dehydrate_itens(self, obj):
         itens_formatados = []
@@ -24,15 +24,15 @@ class VendaResource(resources.ModelResource):
             itens_formatados.append(
                 f"{item.produto.nome} (Qtd: {item.quantidade}, Valor Unitario: {item.preco_unitario})"
             )
-        return "; ".join(itens_formatados)
+        return " - ".join(itens_formatados)
 
     def dehydrate_quantidade_total_itens(self, obj):
         return sum(item.quantidade for item in obj.itens.all())
 
     class Meta:
         model = Venda
-        fields = ('id', 'data', 'usuario', 'valor_total', 'forma_pagamento', 'quantidade_total_itens', 'itens')
-        export_order = ('id', 'data', 'usuario', 'valor_total', 'forma_pagamento', 'quantidade_total_itens', 'itens')
+        fields = ('id', 'data', 'usuario', 'forma_pagamento', 'quantidade_total_itens', 'itens', 'valor_total')
+        export_order = ('id', 'data', 'usuario', 'forma_pagamento', 'quantidade_total_itens', 'itens', 'valor_total')
 
 
 class ItemVendaResource(resources.ModelResource):
@@ -40,8 +40,10 @@ class ItemVendaResource(resources.ModelResource):
     data_venda = fields.Field(column_name='data_venda')
     usuario = fields.Field(column_name='usuario')
     produto = fields.Field(column_name='produto')
-    subtotal = fields.Field(column_name='subtotal')
     forma_pagamento = fields.Field(column_name='forma_pagamento')
+
+    def dehydrate_subtotal(self, obj):
+        return f"{obj.quantidade * obj.preco_unitario:.2f}".replace('.', ',')
 
     def dehydrate_data_venda(self, obj):
         return obj.venda.data.strftime('%Y-%m-%d %H:%M')

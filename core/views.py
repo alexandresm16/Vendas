@@ -2,7 +2,7 @@ from django.utils.timezone import now
 from django.views.generic import TemplateView
 from .models import Venda, ItemVenda
 from django.db.models import Sum, ExpressionWrapper, F, DecimalField, Count
-from django.shortcuts import redirect, render
+from django.shortcuts import render
 
 
 def home(request):
