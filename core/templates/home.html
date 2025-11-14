@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <title>Bem-vindo</title>
+    {% load django_bootstrap5 %}
+    {% bootstrap_css %}
+    {% bootstrap_javascript %}
+</head>
+<body class="bg-light d-flex flex-column justify-content-center align-items-center">
+
+    <div class="text-center pt-5 mt-5">
+        <h1 class="text-dark">Bem-vindo ao Sistema de Gestão</h1>
+
+        <div class="d-flex flex-column gap-3">
+            <a href="/admin/login/" class="btn btn-primary btn-lg">Entrar no Sistema</a>
+            <a href="/dashboard" class="btn btn-secondary btn-lg">Dashboard</a>
+        </div>
+    </div>
+
+</body>
+</html>
+

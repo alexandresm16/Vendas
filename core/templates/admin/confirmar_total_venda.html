@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <title>Bem-vindo</title>
+    {% load django_bootstrap5 %}
+    {% bootstrap_css %}
+    {% bootstrap_javascript %}
+</head>
+<body class="bg-light d-flex flex-column justify-content-center align-items-center">
+<div class="card" style="max-width: 600px; margin: 30px auto; padding: 25px;">
+
+    <h1 class="text-center" style="margin-bottom: 20px;">
+        Confirmar total da venda
+    </h1>
+
+    <div class="text-center" style="font-size: 4.6rem; margin-bottom: 25px;">
+        <span>Total:</span>
+        <strong>
+            <span>R$ {{ total }}</span>
+        </strong>
+    </div>
+
+    <form method="post" class="text-center">
+        {% csrf_token %}
+
+        <button type="submit" name="confirmar" class="btn btn-success btn-lg">
+            ✔ CONFIRMAR VENDA
+        </button>
+
+        <a href="../add/" class="btn btn-danger btn-lg ms-2">
+            ✖ CANCELAR
+        </a>
+    </form>
+
+</div>
+
+</body>
+</html>
