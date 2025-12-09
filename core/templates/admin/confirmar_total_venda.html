@@ -21,6 +21,17 @@
         </strong>
     </div>
 
+    <div class="text-center" style="font-size: 1.3rem; margin-bottom: 25px;">
+        <strong>Forma de pagamento:</strong>
+        <span style="color: #28a745;">
+            {% if forma_pagamento %}
+                {{ forma_pagamento|title }}
+            {% else %}
+                Não informado
+            {% endif %}
+        </span>
+    </div>
+
     <form method="post" class="text-center">
         {% csrf_token %}
 

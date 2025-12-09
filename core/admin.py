@@ -150,6 +150,7 @@ class VendaAdmin(ExportMixin, admin.ModelAdmin):
             **self.admin_site.each_context(request),
             "title": "Confirmar total da venda",
             "total": total,
+            "forma_pagamento": post.get("forma_pagamento"),
         }
 
         return TemplateResponse(request, "admin/confirmar_total_venda.html", context)
