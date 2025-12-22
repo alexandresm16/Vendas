@@ -1,5 +1,7 @@
 from django.contrib import admin
-from django.contrib.admin.models import LogEntry
+from import_export.formats.base_formats import XLS, XLSX, CSV
+from django.contrib.admin.models import LogEntry, CHANGE
+from django.contrib.contenttypes.models import ContentType
 from django.shortcuts import redirect
 from django.template.response import TemplateResponse
 from django.utils.html import format_html
@@ -53,11 +55,43 @@ class ProdutoAdmin(ExportMixin, admin.ModelAdmin):
     search_fields = ['nome', 'codigo_barras']
 
 
+
 @admin.register(Estoque)
 class EstoqueAdmin(ExportMixin, admin.ModelAdmin):
     resource_class = EstoqueResource
     list_display = ['produto', 'quantidade']
     search_fields = ['produto__nome', 'produto__codigo_barras']
+
+    def save_model(self, request, obj, form, change):
+        if change:
+            # guarda valor antigo antes de salvar
+            estoque_antigo = Estoque.objects.get(pk=obj.pk)
+            self.qtd_anterior = estoque_antigo.quantidade
+        else:
+            self.qtd_anterior = None
+
+        super().save_model(request, obj, form, change)
+
+    def log_change(self, request, obj, message):
+        """
+        Substitui o log padrão do Django
+        """
+        if self.qtd_anterior is not None:
+            qtd_nova = obj.quantidade
+
+            if self.qtd_anterior != qtd_nova:
+                message = json.dumps([
+                    {
+                        "changed": {
+                            "fields": ["Quantidade"],
+                            "from": self.qtd_anterior,
+                            "to": qtd_nova
+                        }
+                    }
+                ])
+
+        super().log_change(request, obj, message)
+
 
 
 # ================================
@@ -178,6 +212,7 @@ class ItemVendaAdmin(ExportMixin, admin.ModelAdmin):
     list_display = ['venda', 'produto', 'quantidade', 'preco_unitario']
     search_fields = ['produto__nome', 'venda__id', 'venda__usuario__username']
     readonly_fields = ['venda', 'produto', 'quantidade', 'preco_unitario']
+    formats = [XLS, XLSX, CSV]
 
     def has_add_permission(self, request):
         return False

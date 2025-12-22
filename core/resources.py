@@ -41,6 +41,7 @@ class ItemVendaResource(resources.ModelResource):
     usuario = fields.Field(column_name='usuario')
     produto = fields.Field(column_name='produto')
     forma_pagamento = fields.Field(column_name='forma_pagamento')
+    subtotal = fields.Field(column_name='subtotal')
 
     def dehydrate_subtotal(self, obj):
         return f"{obj.quantidade * obj.preco_unitario:.2f}".replace('.', ',')
