@@ -8,42 +8,57 @@
     {% bootstrap_javascript %}
 </head>
 <body class="bg-light d-flex flex-column justify-content-center align-items-center">
-<div class="card" style="max-width: 600px; margin: 30px auto; padding: 25px;">
+<div class="card" style="max-width: 700px; margin: 30px auto; padding: 25px;">
 
-    <h1 class="text-center" style="margin-bottom: 20px;">
+    <h1 class="text-center mb-4">
         Confirmar total da venda
     </h1>
 
-    <div class="text-center" style="font-size: 4.6rem; margin-bottom: 25px;">
-        <span>Total:</span>
-        <strong>
-            <span>R$ {{ total }}</span>
-        </strong>
+    <!-- TABELA DE ITENS -->
+    <table class="table table-bordered table-striped mb-4">
+        <thead class="table-light">
+        <tr class="text-center">
+            <th>Produto</th>
+            <th>Qtd</th>
+            <th>Valor unitário</th>
+            <th>Subtotal</th>
+        </tr>
+        </thead>
+        <tbody>
+        {% for item in itens %}
+        <tr class="text-center">
+            <td>{{ item.produto }}</td>
+            <td>{{ item.quantidade }}</td>
+            <td>R$ {{ item.preco_unitario|floatformat:2 }}</td>
+            <td>R$ {{ item.subtotal|floatformat:2 }}</td>
+        </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+
+    <!-- TOTAL -->
+    <div class="text-center" style="font-size: 3rem; margin-bottom: 25px;">
+        <strong>Total: R$ {{ total|floatformat:2 }}</strong>
     </div>
 
-    <div class="text-center" style="font-size: 1.3rem; margin-bottom: 25px;">
-        <strong>Forma de pagamento:</strong>
-        <span style="color: #28a745;">
-            {% if forma_pagamento %}
-                {{ forma_pagamento|title }}
-            {% else %}
-                Não informado
-            {% endif %}
+    <!-- FORMA DE PAGAMENTO -->
+    <div class="text-center mb-4" style="font-size: 2rem;">
+        Forma de pagamento:
+        <span class="text-success">
+            {{ forma_pagamento|default:"Não informado"|title }}
         </span>
     </div>
 
+    <!-- BOTÕES -->
     <form method="post" class="text-center">
         {% csrf_token %}
-
         <button type="submit" name="confirmar" class="btn btn-success btn-lg">
             ✔ CONFIRMAR VENDA
         </button>
-
         <a href="../add/" class="btn btn-danger btn-lg ms-2">
             ✖ CANCELAR
         </a>
     </form>
-
 </div>
 
 </body>

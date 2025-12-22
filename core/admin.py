@@ -153,8 +153,9 @@ class VendaAdmin(ExportMixin, admin.ModelAdmin):
         if not post:
             return redirect("/admin/core/venda/add/")
 
-        # Calcula total
         total = 0
+        itens = []
+
         for inline in self.inlines:
             inline_instance = inline(self.model, self.admin_site)
             FormSetClass = inline_instance.get_formset(request)
@@ -162,28 +163,40 @@ class VendaAdmin(ExportMixin, admin.ModelAdmin):
 
             if formset.is_valid():
                 for form in formset.forms:
-                    if form.cleaned_data and not form.cleaned_data.get("DELETE"):
-                        produto = form.cleaned_data.get("produto")
-                        quantidade = form.cleaned_data.get("quantidade")
-                        if produto and quantidade:
-                            total += produto.preco * quantidade
+                    if not form.cleaned_data:
+                        continue
+                    if form.cleaned_data.get("DELETE"):
+                        continue
+
+                    produto = form.cleaned_data.get("produto")
+                    quantidade = form.cleaned_data.get("quantidade") or 0
+
+                    if produto and quantidade:
+                        preco_unitario = produto.preco
+                        subtotal = preco_unitario * quantidade
+
+                        itens.append({
+                            "produto": produto.nome,
+                            "quantidade": quantidade,
+                            "preco_unitario": preco_unitario,
+                            "subtotal": subtotal,
+                        })
+
+                        total += subtotal
 
         # Se usuário clicou em CONFIRMAR
         if request.method == "POST" and "confirmar" in request.POST:
             novo_post = post.copy()
             novo_post["_confirmar_total"] = True
-
-            # Injeta POST final
             request.POST = novo_post
 
-            # Agora salva (apenas UMA vez)
             return self.add_view(request, form_url="", extra_context=None)
 
-        # Renderiza tela
         context = {
             **self.admin_site.each_context(request),
             "title": "Confirmar total da venda",
             "total": total,
+            "itens": itens,
             "forma_pagamento": post.get("forma_pagamento"),
         }
 
