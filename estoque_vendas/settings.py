@@ -44,6 +44,7 @@ INSTALLED_APPS += [
     'import_export',
     'django_bootstrap5',
     'gunicorn',
+    'psycopg',
 ]
 
 MIDDLEWARE = [
@@ -82,10 +83,15 @@ WSGI_APPLICATION = 'estoque_vendas.wsgi.application'
 
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
+        'ENGINE': 'django.db.backends.postgresql',
+        'NAME': 'vendas_db',
+        'USER': 'vendas_user',
+        'PASSWORD': 'admin',
+        'HOST': '127.0.0.1',
+        'PORT': '5432',
     }
 }
+
 
 
 # Password validation
