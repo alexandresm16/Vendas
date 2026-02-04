@@ -10,7 +10,7 @@ from .forms import ItemVendaInlineForm
 from .models import Produto, Estoque, Venda, ItemVenda
 from import_export.admin import ExportMixin
 from .resources import VendaResource, ItemVendaResource, EstoqueResource
-
+import json
 
 # ================================
 # CONFIGURAÇÃO BÁSICA DO ADMIN
@@ -55,7 +55,6 @@ class ProdutoAdmin(ExportMixin, admin.ModelAdmin):
     search_fields = ['nome', 'codigo_barras']
 
 
-
 @admin.register(Estoque)
 class EstoqueAdmin(ExportMixin, admin.ModelAdmin):
     resource_class = EstoqueResource
@@ -93,7 +92,6 @@ class EstoqueAdmin(ExportMixin, admin.ModelAdmin):
         super().log_change(request, obj, message)
 
 
-
 # ================================
 # INLINE DE ITENS DA VENDA
 # ================================
@@ -128,6 +126,24 @@ class VendaAdmin(ExportMixin, admin.ModelAdmin):
         if not obj.pk:
             obj.usuario = request.user
         super().save_model(request, obj, form, change)
+
+    def delete_model(self, request, obj):
+        # Devolve itens ao estoque
+        for item in obj.itens.all():
+            estoque = Estoque.objects.get(produto=item.produto)
+            estoque.quantidade += item.quantidade
+            estoque.save()
+        # Agora sim exclui a venda
+        super().delete_model(request, obj)
+
+    def delete_queryset(self, request, queryset):
+        # Para exclusão em massa no admin
+        for venda in queryset:
+            for item in venda.itens.all():
+                estoque = Estoque.objects.get(produto=item.produto)
+                estoque.quantidade += item.quantidade
+                estoque.save()
+        super().delete_queryset(request, queryset)
 
     # ---------------------------------------------
     # INTERCEPTA ADD_VIEW PARA EVITAR DUPLICAÇÃO

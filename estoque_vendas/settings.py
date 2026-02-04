@@ -43,8 +43,6 @@ INSTALLED_APPS += [
     'core',
     'import_export',
     'django_bootstrap5',
-    'gunicorn',
-    'psycopg',
 ]
 
 MIDDLEWARE = [
@@ -85,7 +83,7 @@ DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql',
         'NAME': 'vendas_db',
-        'USER': 'vendas_user',
+        'USER': 'postgres',
         'PASSWORD': 'admin',
         'HOST': '127.0.0.1',
         'PORT': '5432',
